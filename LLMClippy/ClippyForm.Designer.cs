@@ -1,0 +1,369 @@
+﻿namespace LLMClippy
+{
+    partial class ClippyForm
+    {
+        /// <summary>
+        ///  Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        ///  Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        ///  Required method for Designer support - do not modify
+        ///  the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            components = new System.ComponentModel.Container();
+            Clipboard_listBox = new ListBox();
+            clipboardToolTip = new ToolTip(components);
+            clipboardContextMenu = new ContextMenuStrip(components);
+            promptTextBox = new RichTextBox();
+            responseTextBox = new RichTextBox();
+            generateButton = new Button();
+            splitContainer1 = new SplitContainer();
+            splitContainer2 = new SplitContainer();
+            critiqueButton = new Button();
+            loadingIndicator = new ProgressBar();
+            summarizeButton = new Button();
+            respondButton = new Button();
+            explainButton = new Button();
+            clearButton = new Button();
+            tabControl1 = new TabControl();
+            tabPage1 = new TabPage();
+            WebTab = new TabPage();
+            responseView = new Microsoft.Web.WebView2.WinForms.WebView2();
+            promptBox = new ComboBox();
+            clearListButton = new Button();
+            enabledCheckBox = new CheckBox();
+            modelsComboBox = new ComboBox();
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
+            splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
+            splitContainer2.Panel1.SuspendLayout();
+            splitContainer2.Panel2.SuspendLayout();
+            splitContainer2.SuspendLayout();
+            tabControl1.SuspendLayout();
+            tabPage1.SuspendLayout();
+            WebTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)responseView).BeginInit();
+            SuspendLayout();
+            // 
+            // Clipboard_listBox
+            // 
+            Clipboard_listBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            Clipboard_listBox.BackColor = SystemColors.WindowText;
+            Clipboard_listBox.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Clipboard_listBox.ForeColor = SystemColors.Window;
+            Clipboard_listBox.FormattingEnabled = true;
+            Clipboard_listBox.ItemHeight = 28;
+            Clipboard_listBox.Location = new Point(3, 1);
+            Clipboard_listBox.Name = "Clipboard_listBox";
+            Clipboard_listBox.SelectionMode = SelectionMode.MultiExtended;
+            Clipboard_listBox.Size = new Size(194, 564);
+            Clipboard_listBox.TabIndex = 0;
+            // 
+            // clipboardContextMenu
+            // 
+            clipboardContextMenu.ImageScalingSize = new Size(24, 24);
+            clipboardContextMenu.Name = "clipboardContextMenu";
+            clipboardContextMenu.Size = new Size(61, 4);
+            // 
+            // promptTextBox
+            // 
+            promptTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            promptTextBox.BackColor = SystemColors.WindowText;
+            promptTextBox.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            promptTextBox.ForeColor = SystemColors.Window;
+            promptTextBox.Location = new Point(0, 0);
+            promptTextBox.Name = "promptTextBox";
+            promptTextBox.Size = new Size(978, 210);
+            promptTextBox.TabIndex = 1;
+            promptTextBox.Text = "";
+            // 
+            // responseTextBox
+            // 
+            responseTextBox.BackColor = SystemColors.WindowText;
+            responseTextBox.Dock = DockStyle.Fill;
+            responseTextBox.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            responseTextBox.ForeColor = SystemColors.Window;
+            responseTextBox.Location = new Point(3, 3);
+            responseTextBox.Name = "responseTextBox";
+            responseTextBox.Size = new Size(958, 267);
+            responseTextBox.TabIndex = 2;
+            responseTextBox.Text = "";
+            // 
+            // generateButton
+            // 
+            generateButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            generateButton.Location = new Point(564, 216);
+            generateButton.Name = "generateButton";
+            generateButton.Size = new Size(52, 34);
+            generateButton.TabIndex = 3;
+            generateButton.Text = "&Go";
+            generateButton.UseVisualStyleBackColor = true;
+            generateButton.Click += generateButton_Click;
+            // 
+            // splitContainer1
+            // 
+            splitContainer1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            splitContainer1.Location = new Point(3, 45);
+            splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            splitContainer1.Panel1.Controls.Add(Clipboard_listBox);
+            // 
+            // splitContainer1.Panel2
+            // 
+            splitContainer1.Panel2.Controls.Add(splitContainer2);
+            splitContainer1.Size = new Size(1186, 576);
+            splitContainer1.SplitterDistance = 200;
+            splitContainer1.TabIndex = 4;
+            // 
+            // splitContainer2
+            // 
+            splitContainer2.BackColor = SystemColors.ControlDark;
+            splitContainer2.BorderStyle = BorderStyle.Fixed3D;
+            splitContainer2.Dock = DockStyle.Fill;
+            splitContainer2.Location = new Point(0, 0);
+            splitContainer2.Name = "splitContainer2";
+            splitContainer2.Orientation = Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            splitContainer2.Panel1.Controls.Add(critiqueButton);
+            splitContainer2.Panel1.Controls.Add(loadingIndicator);
+            splitContainer2.Panel1.Controls.Add(summarizeButton);
+            splitContainer2.Panel1.Controls.Add(respondButton);
+            splitContainer2.Panel1.Controls.Add(explainButton);
+            splitContainer2.Panel1.Controls.Add(clearButton);
+            splitContainer2.Panel1.Controls.Add(promptTextBox);
+            splitContainer2.Panel1.Controls.Add(generateButton);
+            // 
+            // splitContainer2.Panel2
+            // 
+            splitContainer2.Panel2.Controls.Add(tabControl1);
+            splitContainer2.Size = new Size(982, 576);
+            splitContainer2.SplitterDistance = 257;
+            splitContainer2.TabIndex = 0;
+            // 
+            // critiqueButton
+            // 
+            critiqueButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            critiqueButton.Location = new Point(380, 216);
+            critiqueButton.Name = "critiqueButton";
+            critiqueButton.Size = new Size(95, 34);
+            critiqueButton.TabIndex = 9;
+            critiqueButton.Text = "&Critique";
+            critiqueButton.UseVisualStyleBackColor = true;
+            critiqueButton.Click += critiqueButton_Click;
+            // 
+            // loadingIndicator
+            // 
+            loadingIndicator.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            loadingIndicator.Location = new Point(478, 216);
+            loadingIndicator.Name = "loadingIndicator";
+            loadingIndicator.Size = new Size(82, 34);
+            loadingIndicator.Style = ProgressBarStyle.Marquee;
+            loadingIndicator.TabIndex = 4;
+            loadingIndicator.Visible = false;
+            // 
+            // summarizeButton
+            // 
+            summarizeButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            summarizeButton.Location = new Point(270, 216);
+            summarizeButton.Name = "summarizeButton";
+            summarizeButton.Size = new Size(108, 34);
+            summarizeButton.TabIndex = 8;
+            summarizeButton.Text = "&Summarize";
+            summarizeButton.UseVisualStyleBackColor = true;
+            summarizeButton.Click += summarizeButton_Click;
+            // 
+            // respondButton
+            // 
+            respondButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            respondButton.Location = new Point(173, 216);
+            respondButton.Name = "respondButton";
+            respondButton.Size = new Size(96, 34);
+            respondButton.TabIndex = 7;
+            respondButton.Text = "&Respond";
+            respondButton.UseVisualStyleBackColor = true;
+            respondButton.Click += respondButton_Click;
+            // 
+            // explainButton
+            // 
+            explainButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            explainButton.Location = new Point(85, 216);
+            explainButton.Name = "explainButton";
+            explainButton.Size = new Size(88, 34);
+            explainButton.TabIndex = 6;
+            explainButton.Text = "&Explain";
+            explainButton.UseVisualStyleBackColor = true;
+            explainButton.Click += explainButton_Click;
+            // 
+            // clearButton
+            // 
+            clearButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            clearButton.Location = new Point(3, 216);
+            clearButton.Name = "clearButton";
+            clearButton.Size = new Size(81, 34);
+            clearButton.TabIndex = 5;
+            clearButton.Text = "Clear";
+            clearButton.UseVisualStyleBackColor = true;
+            clearButton.Click += clearButton_Click;
+            // 
+            // tabControl1
+            // 
+            tabControl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            tabControl1.Controls.Add(tabPage1);
+            tabControl1.Controls.Add(WebTab);
+            tabControl1.Location = new Point(3, -5);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new Size(972, 311);
+            tabControl1.TabIndex = 4;
+            // 
+            // tabPage1
+            // 
+            tabPage1.Controls.Add(responseTextBox);
+            tabPage1.Location = new Point(4, 34);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(964, 273);
+            tabPage1.TabIndex = 0;
+            tabPage1.Text = "Text";
+            tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // WebTab
+            // 
+            WebTab.Controls.Add(responseView);
+            WebTab.Location = new Point(4, 34);
+            WebTab.Name = "WebTab";
+            WebTab.Padding = new Padding(3);
+            WebTab.Size = new Size(964, 273);
+            WebTab.TabIndex = 1;
+            WebTab.Text = "Web";
+            WebTab.UseVisualStyleBackColor = true;
+            // 
+            // responseView
+            // 
+            responseView.AllowExternalDrop = true;
+            responseView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            responseView.CreationProperties = null;
+            responseView.DefaultBackgroundColor = Color.White;
+            responseView.Location = new Point(6, 6);
+            responseView.Name = "responseView";
+            responseView.Size = new Size(952, 261);
+            responseView.TabIndex = 3;
+            responseView.ZoomFactor = 1D;
+            // 
+            // promptBox
+            // 
+            promptBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            promptBox.FormattingEnabled = true;
+            promptBox.Location = new Point(655, 6);
+            promptBox.Name = "promptBox";
+            promptBox.Size = new Size(531, 33);
+            promptBox.TabIndex = 5;
+            // 
+            // clearListButton
+            // 
+            clearListButton.Location = new Point(7, 6);
+            clearListButton.Name = "clearListButton";
+            clearListButton.Size = new Size(91, 34);
+            clearListButton.TabIndex = 6;
+            clearListButton.Text = "Clear List";
+            clearListButton.UseVisualStyleBackColor = true;
+            clearListButton.Click += clearListButton_Click;
+            // 
+            // enabledCheckBox
+            // 
+            enabledCheckBox.AutoSize = true;
+            enabledCheckBox.Checked = true;
+            enabledCheckBox.CheckState = CheckState.Checked;
+            enabledCheckBox.Location = new Point(106, 9);
+            enabledCheckBox.Name = "enabledCheckBox";
+            enabledCheckBox.Size = new Size(185, 29);
+            enabledCheckBox.TabIndex = 7;
+            enabledCheckBox.Text = "Monitor Clipboard";
+            enabledCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // modelsComboBox
+            // 
+            modelsComboBox.FormattingEnabled = true;
+            modelsComboBox.Location = new Point(294, 6);
+            modelsComboBox.Name = "modelsComboBox";
+            modelsComboBox.Size = new Size(182, 33);
+            modelsComboBox.TabIndex = 8;
+            // 
+            // ClippyForm
+            // 
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(1192, 625);
+            Controls.Add(modelsComboBox);
+            Controls.Add(enabledCheckBox);
+            Controls.Add(clearListButton);
+            Controls.Add(promptBox);
+            Controls.Add(splitContainer1);
+            Name = "ClippyForm";
+            Text = "LLM Clippy";
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+            splitContainer1.ResumeLayout(false);
+            splitContainer2.Panel1.ResumeLayout(false);
+            splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
+            splitContainer2.ResumeLayout(false);
+            tabControl1.ResumeLayout(false);
+            tabPage1.ResumeLayout(false);
+            WebTab.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)responseView).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
+        }
+
+        #endregion
+
+        private ListBox Clipboard_listBox;
+        private ToolTip clipboardToolTip;
+        private ContextMenuStrip clipboardContextMenu;
+        private RichTextBox promptTextBox;
+        private RichTextBox responseTextBox;
+        private Button generateButton;
+        private SplitContainer splitContainer1;
+        private SplitContainer splitContainer2;
+        private ProgressBar loadingIndicator;
+        private Button respondButton;
+        private Button explainButton;
+        private Button clearButton;
+        private Button summarizeButton;
+        private Microsoft.Web.WebView2.WinForms.WebView2 responseView;
+        private TabControl tabControl1;
+        private TabPage tabPage1;
+        private TabPage WebTab;
+        private ComboBox promptBox;
+        private Button clearListButton;
+        private CheckBox enabledCheckBox;
+        private ComboBox modelsComboBox;
+        private Button critiqueButton;
+    }
+}
