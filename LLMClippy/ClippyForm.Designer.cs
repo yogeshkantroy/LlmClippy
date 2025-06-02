@@ -37,6 +37,7 @@
             generateButton = new Button();
             splitContainer1 = new SplitContainer();
             splitContainer2 = new SplitContainer();
+            newTabCheckbox = new CheckBox();
             critiqueButton = new Button();
             loadingIndicator = new ProgressBar();
             summarizeButton = new Button();
@@ -44,8 +45,8 @@
             explainButton = new Button();
             clearButton = new Button();
             tabControl1 = new TabControl();
-            tabPage1 = new TabPage();
-            WebTab = new TabPage();
+            textTab = new TabPage();
+            webTab = new TabPage();
             responseView = new Microsoft.Web.WebView2.WinForms.WebView2();
             promptBox = new ComboBox();
             clearListButton = new Button();
@@ -60,8 +61,8 @@
             splitContainer2.Panel2.SuspendLayout();
             splitContainer2.SuspendLayout();
             tabControl1.SuspendLayout();
-            tabPage1.SuspendLayout();
-            WebTab.SuspendLayout();
+            textTab.SuspendLayout();
+            webTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)responseView).BeginInit();
             SuspendLayout();
             // 
@@ -76,7 +77,7 @@
             Clipboard_listBox.Location = new Point(3, 1);
             Clipboard_listBox.Name = "Clipboard_listBox";
             Clipboard_listBox.SelectionMode = SelectionMode.MultiExtended;
-            Clipboard_listBox.Size = new Size(194, 564);
+            Clipboard_listBox.Size = new Size(193, 536);
             Clipboard_listBox.TabIndex = 0;
             // 
             // clipboardContextMenu
@@ -93,7 +94,7 @@
             promptTextBox.ForeColor = SystemColors.Window;
             promptTextBox.Location = new Point(0, 0);
             promptTextBox.Name = "promptTextBox";
-            promptTextBox.Size = new Size(978, 210);
+            promptTextBox.Size = new Size(979, 204);
             promptTextBox.TabIndex = 1;
             promptTextBox.Text = "";
             // 
@@ -105,14 +106,14 @@
             responseTextBox.ForeColor = SystemColors.Window;
             responseTextBox.Location = new Point(3, 3);
             responseTextBox.Name = "responseTextBox";
-            responseTextBox.Size = new Size(958, 267);
+            responseTextBox.Size = new Size(958, 271);
             responseTextBox.TabIndex = 2;
             responseTextBox.Text = "";
             // 
             // generateButton
             // 
             generateButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            generateButton.Location = new Point(564, 216);
+            generateButton.Location = new Point(564, 210);
             generateButton.Name = "generateButton";
             generateButton.Size = new Size(52, 34);
             generateButton.TabIndex = 3;
@@ -134,7 +135,7 @@
             // 
             splitContainer1.Panel2.Controls.Add(splitContainer2);
             splitContainer1.Size = new Size(1186, 576);
-            splitContainer1.SplitterDistance = 200;
+            splitContainer1.SplitterDistance = 199;
             splitContainer1.TabIndex = 4;
             // 
             // splitContainer2
@@ -148,6 +149,8 @@
             // 
             // splitContainer2.Panel1
             // 
+            splitContainer2.Panel1.Controls.Add(generateButton);
+            splitContainer2.Panel1.Controls.Add(newTabCheckbox);
             splitContainer2.Panel1.Controls.Add(critiqueButton);
             splitContainer2.Panel1.Controls.Add(loadingIndicator);
             splitContainer2.Panel1.Controls.Add(summarizeButton);
@@ -155,19 +158,30 @@
             splitContainer2.Panel1.Controls.Add(explainButton);
             splitContainer2.Panel1.Controls.Add(clearButton);
             splitContainer2.Panel1.Controls.Add(promptTextBox);
-            splitContainer2.Panel1.Controls.Add(generateButton);
             // 
             // splitContainer2.Panel2
             // 
             splitContainer2.Panel2.Controls.Add(tabControl1);
-            splitContainer2.Size = new Size(982, 576);
-            splitContainer2.SplitterDistance = 257;
+            splitContainer2.Size = new Size(983, 576);
+            splitContainer2.SplitterDistance = 251;
             splitContainer2.TabIndex = 0;
+            // 
+            // newTabCheckbox
+            // 
+            newTabCheckbox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            newTabCheckbox.AutoSize = true;
+            newTabCheckbox.Location = new Point(625, 212);
+            newTabCheckbox.Margin = new Padding(2, 2, 2, 2);
+            newTabCheckbox.Name = "newTabCheckbox";
+            newTabCheckbox.Size = new Size(105, 29);
+            newTabCheckbox.TabIndex = 10;
+            newTabCheckbox.Text = "New Tab";
+            newTabCheckbox.UseVisualStyleBackColor = true;
             // 
             // critiqueButton
             // 
             critiqueButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            critiqueButton.Location = new Point(380, 216);
+            critiqueButton.Location = new Point(380, 210);
             critiqueButton.Name = "critiqueButton";
             critiqueButton.Size = new Size(95, 34);
             critiqueButton.TabIndex = 9;
@@ -178,7 +192,7 @@
             // loadingIndicator
             // 
             loadingIndicator.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            loadingIndicator.Location = new Point(478, 216);
+            loadingIndicator.Location = new Point(478, 210);
             loadingIndicator.Name = "loadingIndicator";
             loadingIndicator.Size = new Size(82, 34);
             loadingIndicator.Style = ProgressBarStyle.Marquee;
@@ -188,7 +202,7 @@
             // summarizeButton
             // 
             summarizeButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            summarizeButton.Location = new Point(270, 216);
+            summarizeButton.Location = new Point(270, 210);
             summarizeButton.Name = "summarizeButton";
             summarizeButton.Size = new Size(108, 34);
             summarizeButton.TabIndex = 8;
@@ -199,7 +213,7 @@
             // respondButton
             // 
             respondButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            respondButton.Location = new Point(173, 216);
+            respondButton.Location = new Point(173, 210);
             respondButton.Name = "respondButton";
             respondButton.Size = new Size(96, 34);
             respondButton.TabIndex = 7;
@@ -210,7 +224,7 @@
             // explainButton
             // 
             explainButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            explainButton.Location = new Point(85, 216);
+            explainButton.Location = new Point(85, 210);
             explainButton.Name = "explainButton";
             explainButton.Size = new Size(88, 34);
             explainButton.TabIndex = 6;
@@ -221,7 +235,7 @@
             // clearButton
             // 
             clearButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            clearButton.Location = new Point(3, 216);
+            clearButton.Location = new Point(3, 210);
             clearButton.Name = "clearButton";
             clearButton.Size = new Size(81, 34);
             clearButton.TabIndex = 5;
@@ -232,35 +246,35 @@
             // tabControl1
             // 
             tabControl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            tabControl1.Controls.Add(tabPage1);
-            tabControl1.Controls.Add(WebTab);
-            tabControl1.Location = new Point(3, -5);
+            tabControl1.Controls.Add(textTab);
+            tabControl1.Controls.Add(webTab);
+            tabControl1.Location = new Point(3, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(972, 311);
+            tabControl1.Size = new Size(972, 315);
             tabControl1.TabIndex = 4;
             // 
-            // tabPage1
+            // textTab
             // 
-            tabPage1.Controls.Add(responseTextBox);
-            tabPage1.Location = new Point(4, 34);
-            tabPage1.Name = "tabPage1";
-            tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(964, 273);
-            tabPage1.TabIndex = 0;
-            tabPage1.Text = "Text";
-            tabPage1.UseVisualStyleBackColor = true;
+            textTab.Controls.Add(responseTextBox);
+            textTab.Location = new Point(4, 34);
+            textTab.Name = "textTab";
+            textTab.Padding = new Padding(3, 3, 3, 3);
+            textTab.Size = new Size(964, 277);
+            textTab.TabIndex = 0;
+            textTab.Text = "Text";
+            textTab.UseVisualStyleBackColor = true;
             // 
-            // WebTab
+            // webTab
             // 
-            WebTab.Controls.Add(responseView);
-            WebTab.Location = new Point(4, 34);
-            WebTab.Name = "WebTab";
-            WebTab.Padding = new Padding(3);
-            WebTab.Size = new Size(964, 273);
-            WebTab.TabIndex = 1;
-            WebTab.Text = "Web";
-            WebTab.UseVisualStyleBackColor = true;
+            webTab.Controls.Add(responseView);
+            webTab.Location = new Point(4, 34);
+            webTab.Name = "webTab";
+            webTab.Padding = new Padding(3, 3, 3, 3);
+            webTab.Size = new Size(964, 277);
+            webTab.TabIndex = 1;
+            webTab.Text = "Web";
+            webTab.UseVisualStyleBackColor = true;
             // 
             // responseView
             // 
@@ -289,7 +303,7 @@
             clearListButton.Name = "clearListButton";
             clearListButton.Size = new Size(91, 34);
             clearListButton.TabIndex = 6;
-            clearListButton.Text = "Clear List";
+            clearListButton.Text = "Clear All";
             clearListButton.UseVisualStyleBackColor = true;
             clearListButton.Click += clearListButton_Click;
             // 
@@ -300,17 +314,17 @@
             enabledCheckBox.CheckState = CheckState.Checked;
             enabledCheckBox.Location = new Point(106, 9);
             enabledCheckBox.Name = "enabledCheckBox";
-            enabledCheckBox.Size = new Size(185, 29);
+            enabledCheckBox.Size = new Size(159, 29);
             enabledCheckBox.TabIndex = 7;
-            enabledCheckBox.Text = "Monitor Clipboard";
+            enabledCheckBox.Text = "Add to Prompt";
             enabledCheckBox.UseVisualStyleBackColor = true;
             // 
             // modelsComboBox
             // 
             modelsComboBox.FormattingEnabled = true;
-            modelsComboBox.Location = new Point(294, 6);
+            modelsComboBox.Location = new Point(501, 5);
             modelsComboBox.Name = "modelsComboBox";
-            modelsComboBox.Size = new Size(182, 33);
+            modelsComboBox.Size = new Size(148, 33);
             modelsComboBox.TabIndex = 8;
             // 
             // ClippyForm
@@ -330,12 +344,13 @@
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
             splitContainer2.Panel1.ResumeLayout(false);
+            splitContainer2.Panel1.PerformLayout();
             splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
             splitContainer2.ResumeLayout(false);
             tabControl1.ResumeLayout(false);
-            tabPage1.ResumeLayout(false);
-            WebTab.ResumeLayout(false);
+            textTab.ResumeLayout(false);
+            webTab.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)responseView).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -358,12 +373,13 @@
         private Button summarizeButton;
         private Microsoft.Web.WebView2.WinForms.WebView2 responseView;
         private TabControl tabControl1;
-        private TabPage tabPage1;
-        private TabPage WebTab;
+        private TabPage textTab;
+        private TabPage webTab;
         private ComboBox promptBox;
         private Button clearListButton;
         private CheckBox enabledCheckBox;
         private ComboBox modelsComboBox;
         private Button critiqueButton;
+        private CheckBox newTabCheckbox;
     }
 }

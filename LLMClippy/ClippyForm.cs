@@ -1,8 +1,6 @@
-using System.Collections.Specialized;
-using System.Configuration;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using Markdig;
+using Microsoft.Web.WebView2.WinForms;
+using System.Runtime.InteropServices;
 
 namespace LLMClippy
 {
@@ -36,19 +34,23 @@ namespace LLMClippy
             // Attach KeyDown event to promptTextBox
             promptTextBox.KeyDown += PromptTextBox_KeyDown;
 
-            // Initialize the ContextMenuStrip
+            InitializeAOAI();
+
             InitializeContextMenu();
 
             InitializeWebView2Async();
 
             PopulateSystemMessageComboBox();
 
-            InitializeAOAI();
-
             PopulateModelsComboBox();
 
             // Set the default tab to Web
             tabControl1.SelectedIndex = 1;
+
+            // Enable custom drawing for tabs and add close button
+            tabControl1.DrawMode = TabDrawMode.OwnerDrawFixed;
+            tabControl1.DrawItem += TabControl1_DrawItem;
+            tabControl1.MouseDown += TabControl1_MouseDown;
         }
 
         private void PromptTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -71,10 +73,27 @@ namespace LLMClippy
                     ShowPromptTextBoxFindDialog();
                 }
             }
+            else if (e.Control && e.KeyCode == Keys.V)
+            {
+                e.SuppressKeyPress = true;
+                PastePlainText();
+            }
+        }
+
+        private void PastePlainText()
+        {
+            if (Clipboard.ContainsText())
+            {
+                string text = Clipboard.GetText();
+                int selectionIndex = promptTextBox.SelectionStart;
+                int selectionLength = promptTextBox.SelectionLength;
+                promptTextBox.Text = promptTextBox.Text.Remove(selectionIndex, selectionLength)
+                    .Insert(selectionIndex, text);
+                promptTextBox.SelectionStart = selectionIndex + text.Length;
+            }
         }
 
         private string? lastSearchTerm = null;
-
         private void ShowPromptTextBoxFindDialog()
         {
             using (var findForm = new Form())
@@ -144,32 +163,31 @@ namespace LLMClippy
 
         private void PopulateModelsComboBox()
         {
-            // Retrieve the AzureOpenAISettings section
-            var azureOpenAISettings = (NameValueCollection)ConfigurationManager.GetSection("AzureOpenAISettings");
+            var modelNames = AppSettings.GetAzureModelNames().ToArray();
+            if (!modelNames.Any())
+                return;
 
-            // Create a HashSet to store unique model names
-            var modelNames = new HashSet<string>();
-
-            // Iterate through all keys in the AzureOpenAISettings section
-            foreach (string key in azureOpenAISettings.AllKeys)
-            {
-                // Extract the model name (e.g., "GPT4o" from "GPT4o.Endpoint")
-                if (key.Contains("."))
-                {
-                    string modelName = key.Split('.')[0];
-                    modelNames.Add(modelName);
-                }
-            }
-
-            // Add the unique model names to the modelsComboBox
-            modelsComboBox.Items.AddRange(modelNames.ToArray());
+            modelsComboBox.Items.AddRange(modelNames);
 
             // Optionally, set the first item as the default selected item
-            if (modelsComboBox.Items.Count > 0)
-            {
-                modelsComboBox.SelectedIndex = 0;
-            }
+            if (modelsComboBox.Items.Count > 1)
+                modelsComboBox.SelectedIndex = 1;
+
             modelsComboBox.SelectedIndexChanged += ModelsComboBox_SelectedIndexChanged;
+        }
+
+        private void PopulateSystemMessageComboBox()
+        {
+
+            var systemPrompts = AppSettings.GetSystemPrompts().ToArray();
+            if (!systemPrompts.Any())
+                return;
+
+            promptBox.Items.AddRange(systemPrompts);
+
+            // Optionally, set the first item as the default selected item
+            if (promptBox.Items.Count > 0)
+                promptBox.SelectedIndex = 0;
         }
 
         private void ModelsComboBox_SelectedIndexChanged(object? sender, EventArgs e)
@@ -184,32 +202,6 @@ namespace LLMClippy
                 aoai = new AOAI(selectedSystemMessage, selectedModel);
             }
         }
-
-        private void PopulateSystemMessageComboBox()
-        {
-            // Iterate through all app settings  
-            foreach (string? key in ConfigurationManager.AppSettings.AllKeys) // Use nullable string for the key
-            {
-                // Check if the key starts with "systemmessage"  
-                if (key != null && key.StartsWith("SystemPrompt", StringComparison.OrdinalIgnoreCase)) // Add null check for key
-                {
-                    string? value = ConfigurationManager.AppSettings[key]; // Use nullable string  
-
-                    // Add the value to the ComboBox if it's not null or empty  
-                    if (!string.IsNullOrEmpty(value))
-                    {
-                        promptBox.Items.Add(value);
-                    }
-                }
-
-                // Optionally, set the first item as the default selected item
-                if (promptBox.Items.Count > 0)
-                {
-                    promptBox.SelectedIndex = 0;
-                }
-            }
-        }
-
 
         private async void InitializeWebView2Async()
         {
@@ -297,6 +289,10 @@ namespace LLMClippy
             {
                 lastHoveredIndex = index; // Update the last hovered index
                 string? itemText = Clipboard_listBox.Items[index]?.ToString();
+                if (itemText?.Length > 400)
+                {
+                    itemText = itemText.Substring(0, 400) + "...";
+                }
                 clipboardToolTip.SetToolTip(Clipboard_listBox, itemText ?? string.Empty);
             }
             else if (index < 0 || index >= Clipboard_listBox.Items.Count)
@@ -316,11 +312,12 @@ namespace LLMClippy
             }
         }
 
-        private void ClipboardChanged()
+        private async void ClipboardChanged()
         {
-            if (!this.enabledCheckBox.Checked)
-                return;
-
+            //if (Clipboard.ContainsData(DataFormats.Html))
+            //{
+            //    AOAI.CreateChatMessageFromHtml(Clipboard.GetText(TextDataFormat.Html));
+            //}
             if (Clipboard.ContainsText())
             {
                 string clipboardText = Clipboard.GetText().Trim();
@@ -339,10 +336,124 @@ namespace LLMClippy
                     this.Clipboard_listBox.Items.Add(clipboardText);
 
                     // Append the clipboardText to promptTextBox
-                    this.promptTextBox.AppendText(clipboardText + Environment.NewLine + Environment.NewLine);
+                    if (enabledCheckBox.Checked)
+                        this.promptTextBox.AppendText(clipboardText + Environment.NewLine + Environment.NewLine);
                 }
             }
-            // Similarly check for images or other formats if needed  
+            // Handle image
+            else if (Clipboard.ContainsImage())
+            {
+                try
+                {
+                    var image = Clipboard.GetImage();
+                    if (image != null)
+                    {
+                        //if (enabledCheckBox.Checked)
+                        //    promptTextBox.Paste();
+
+                        // Convert Image to PNG byte array
+                        using (var ms = new MemoryStream())
+                        {
+                            image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                            ms.Position = 0;
+                            var imageBytes = BinaryData.FromBytes(ms.ToArray());
+                            string mediaType = "image/png";
+
+                            // Convert image to base64 for HTML embedding
+                            string base64 = Convert.ToBase64String(ms.ToArray());
+                            string imgHtml = $"<img src=\"data:image/png;base64,{base64}\" style=\"max-width:80%;height:auto;\" />";
+
+                            loadingIndicator.Visible = true;
+
+                            // extract context from previous images in the listbox
+                            string context = string.Empty;
+                            for (int i = Clipboard_listBox.Items.Count - 1; i >= 0; i--)
+                            {
+                                if (Clipboard_listBox.Items[i] is string itemText && itemText.StartsWith("<img src=\"data:image/png;base64,"))
+                                {
+                                    // If the item is an image, use it as context
+                                    imgHtml = Clipboard_listBox.Items[i].ToString() + "<br/>" + imgHtml;
+                                    break;
+                                }
+                            }
+
+                            // Call AOAI.AnalyzeImage and display the result
+                            string result = await aoai.AnalyzeImage(imageBytes, mediaType, context);
+                            responseTextBox.Text = result;
+
+                            // Add the result to the Clipboard_listBox
+                            Clipboard_listBox.Items.Add(result);
+
+                            string styledHtml = CreateStyledHtml(result, imgHtml);
+                            ShowResponseInNewTab(styledHtml, "Image");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                    {
+                        responseTextBox.Text = $"Error analyzing image: {ex.Message}";
+                    }
+                    finally
+                    {
+                        loadingIndicator.Visible = false;
+                    }
+            }
+        }
+
+        private static string CreateStyledHtml(string result, string imgHtml = "")
+        {
+            // Render Markdown result to HTML
+            var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+            string htmlContent = Markdig.Markdown.ToHtml(result, pipeline);
+
+            if (!string.IsNullOrEmpty(imgHtml))
+                imgHtml = $"<div>{imgHtml}</div><br/>";
+
+            // Combine image and analysis in HTML
+            string styledHtml = $@"
+<html>
+<head>
+    <style>
+        body {{
+            font-family: 'Calibri', sans-serif;
+            font-size: 14px;
+        }}
+    </style>
+    <script src=""https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js""></script>
+</head>
+<body>
+    {imgHtml}
+    {htmlContent}
+</body>
+</html>";
+            return styledHtml;
+        }
+
+        private void ShowResponseInNewTab(string htmlContent, string tabTitle = "Response")
+        {
+            // Create a new WebView2 control
+            var webView = new WebView2
+            {
+                Dock = DockStyle.Fill
+            };
+
+            // Ensure WebView2 is initialized before navigation
+            webView.CoreWebView2InitializationCompleted += (s, e) =>
+            {
+                webView.NavigateToString(htmlContent);
+            };
+            webView.EnsureCoreWebView2Async();
+
+            // Create a new TabPage
+            var tabPage = new TabPage
+            {
+                Text = $"{tabTitle}{tabControl1.TabPages.Count - 1}   "
+            };
+            tabPage.Controls.Add(webView);
+
+            // Add the new tab and select it
+            tabControl1.TabPages.Add(tabPage);
+            tabControl1.SelectedTab = tabPage;
         }
 
 
@@ -357,7 +468,7 @@ namespace LLMClippy
             this.promptTextBox.Clear();
         }
 
-        private AOAI aoai;
+        private AOAI? aoai;
         private void InitializeAOAI()
         {
             // Ensure there is a selected item in promptBox
@@ -375,23 +486,38 @@ namespace LLMClippy
 
         private async void generateButton_Click(object sender, EventArgs e)
         {
-            // Get the prompt text from promptTextBox
-            string prompt = promptTextBox.Text;
-
-            // Call the extracted method
-            await CallGetResponseAsync(prompt);
+            await GetLlmResponseAsync(promptTextBox.Text);
         }
 
         private async void explainButton_Click(object sender, EventArgs e)
         {
-            // Get the prompt text from promptTextBox  
-            string prompt = promptTextBox.Text + Environment.NewLine + Environment.NewLine + "Explain the above:";
-
-            // Call the extracted method  
-            await CallGetResponseAsync(prompt);
+            await GetLlmResponseAsync(promptTextBox.Text + 
+                Environment.NewLine + Environment.NewLine + 
+                "Explain the above:");
         }
 
-        private async Task CallGetResponseAsync(string prompt)
+        private async void respondButton_Click(object sender, EventArgs e)
+        {
+            await GetLlmResponseAsync(promptTextBox.Text +
+                Environment.NewLine + Environment.NewLine +
+                "Without beting too aggreable, write ane effective response to the above :");
+        }
+
+        private async void summarizeButton_Click(object sender, EventArgs e)
+        {
+            await GetLlmResponseAsync(promptTextBox.Text +
+                Environment.NewLine + Environment.NewLine +
+                "Summarize the above and then state possible action items:");
+        }
+
+        private async void critiqueButton_Click(object sender, EventArgs e)
+        {
+            await GetLlmResponseAsync(promptTextBox.Text +
+                Environment.NewLine + Environment.NewLine +
+                "Review the above to provide constructive criticsm and new ideas:");
+        }
+
+        private async Task GetLlmResponseAsync(string prompt, string tabName = null)
         {
             try
             {
@@ -399,31 +525,12 @@ namespace LLMClippy
                 string response = await aoai.GetResponseAsync(prompt);
                 responseTextBox.Text = response;
 
-                // Enable table support in the Markdown pipeline
-                var pipeline = new MarkdownPipelineBuilder()
-                    .UseAdvancedExtensions() // This includes table support and more
-                    .Build();
+                string styledHtml = CreateStyledHtml(response);
 
-                string htmlContent = Markdown.ToHtml(response, pipeline);
-
-                // Inject custom CSS for font styling
-                string styledHtml = $@"
-<html>
-<head>
-    <style>
-        body {{
-            font-family: 'Calibri', sans-serif;
-            font-size: 14px;
-        }}
-    </style>
-</head>
-<body>
-    {htmlContent}
-</body>
-</html>";
-
-                // Display the styled HTML in the WebView2 control
-                responseView.NavigateToString(styledHtml);
+                if (newTabCheckbox.Checked)
+                    ShowResponseInNewTab(styledHtml, tabName);
+                else
+                    responseView.NavigateToString(styledHtml);
 
             }
             catch (Exception ex)
@@ -439,36 +546,77 @@ namespace LLMClippy
             }
         }
 
-        private async void respondButton_Click(object sender, EventArgs e)
-        {
-            // Get the prompt text from promptTextBox  
-            string prompt = promptTextBox.Text + Environment.NewLine + Environment.NewLine + "Write an effective response to the above:";
-
-            // Call the extracted method  
-            await CallGetResponseAsync(prompt);
-        }
-
-        private async void summarizeButton_Click(object sender, EventArgs e)
-        {
-            // Get the prompt text from promptTextBox  
-            string prompt = promptTextBox.Text + Environment.NewLine + Environment.NewLine + "Summarize the above and possible action items:";
-
-            // Call the extracted method  
-            await CallGetResponseAsync(prompt);
-        }
-
         private void clearListButton_Click(object sender, EventArgs e)
         {
             Clipboard_listBox.Items.Clear();
+            promptTextBox.Clear();
         }
 
-        private async void critiqueButton_Click(object sender, EventArgs e)
+        // Draw the tab text and the 'x' close button
+        private void TabControl1_DrawItem(object? sender, DrawItemEventArgs e)
         {
-            // Get the prompt text from promptTextBox  
-            string prompt = promptTextBox.Text + Environment.NewLine + Environment.NewLine + "Review the above to provide constructive criticsm and new ideas:";
+            var tabRect = tabControl1.GetTabRect(e.Index);
+            var tabText = tabControl1.TabPages[e.Index].Text;
 
-            // Call the extracted method  
-            await CallGetResponseAsync(prompt);
+
+            Rectangle textRect = new Rectangle(tabRect.X+2, tabRect.Y, tabRect.Width, tabRect.Height);
+            TextRenderer.DrawText(e.Graphics, tabText, e.Font, textRect, Color.Black, TextFormatFlags.Left);
+
+            // Draw 'x' close button on all tabs except the first two
+            if (e.Index > 1)
+            {
+                Rectangle closeRect = new Rectangle(tabRect.Right - 18, tabRect.Top + 6, 12, 12);
+                using (Font closeFont = new Font("Arial", 8, FontStyle.Bold))
+                {
+                    // Center the 'X' in the closeRect
+                    StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+                    e.Graphics.DrawString("×", closeFont, Brushes.Black, closeRect, sf);
+                }
+            }
+        }
+
+        // Handle mouse click to close tab if 'X' is clicked
+        private void TabControl1_MouseDown(object? sender, MouseEventArgs e)
+        {
+            for (int i = 2; i < tabControl1.TabPages.Count; i++) // skip first two tabs
+            {
+                var tabRect = tabControl1.GetTabRect(i);
+                Rectangle closeRect = new Rectangle(tabRect.Right - 18, tabRect.Top + 6, 12, 12);
+                if (closeRect.Contains(e.Location))
+                {
+                    var tabToRemove = tabControl1.TabPages[i];
+                    tabControl1.TabPages.Remove(tabToRemove);
+                    tabToRemove.Dispose();
+                    break;
+                }
+            }
+        }
+
+        public void AddTeamsTab()
+        {
+            var tabPage = new TabPage("Teams");
+            var webView = new WebView2
+            {
+                Dock = DockStyle.Fill
+            };
+            tabPage.Controls.Add(webView);
+            tabControl1.TabPages.Add(tabPage);
+
+            // Set the new tab as the selected tab
+            tabControl1.SelectedTab = tabPage;
+
+            // Initialize WebView2, set user agent, and navigate
+            webView.CoreWebView2InitializationCompleted += (s, e) =>
+            {
+                if (webView.CoreWebView2 != null)
+                {
+                    // Emulate Microsoft Edge user agent (update version as needed)
+                    webView.CoreWebView2.Settings.UserAgent =
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0.0";
+                    webView.CoreWebView2.Navigate("https://teams.microsoft.com/v2/");
+                }
+            };
+            webView.EnsureCoreWebView2Async();
         }
     }
 }
